@@ -1,0 +1,25 @@
+#+TITLE: MINSKYTRON-GL
+#+AUTHOR: José M. Á. Ronquillo Rivera
+
+Penrose tiling generator
+
+* License
+
+GPLv3
+
+* Screenshots
+
+* How to run the program
+
+To run the program, clone [[https://github.com/josrr/minskytron-gl][this]] repository in your Quicklisp
+=local-projects= directory
+
+#+BEGIN_SRC
+ $ cd ~/quicklisp/local-projects/
+ $ git clone https://github.com/josrr/minskytron-gl.git
+#+END_SRC
+
+then:
+
+#+BEGIN_SRC
+#+END_SRC

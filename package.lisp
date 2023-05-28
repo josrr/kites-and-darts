@@ -1,7 +1,8 @@
 ;;;; package.lisp
 
-(defpackage #:rhombs
+(defpackage #:kites-and-darts
   (:use #:clim
         #:clim-lisp
         #:mcclim-render
-        #:clime))
+        #:clime)
+  (:export #:start))

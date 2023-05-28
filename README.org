@@ -1,7 +1,7 @@
-#+TITLE: MINSKYTRON-GL
+#+TITLE: KITES-AND-DARTS
 #+AUTHOR: José M. Á. Ronquillo Rivera
 
-Penrose tiling generator
+P2 Penrose tiling generator
 
 * License
 

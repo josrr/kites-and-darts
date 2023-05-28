@@ -1,7 +1,7 @@
 ;;;; rhombs.asd
 
-(asdf:defsystem #:rhombs
-  :description "P2 and P3 tile generator"
+(asdf:defsystem #:kites-and-darts
+  :description "P2 tile generator"
   :author "José Miguel Ángel Ronquillo Rivera <jose@rufina.link>"
   :license  "GPL Ver. 3"
   :version "0.0.1"
@@ -13,4 +13,4 @@
                #:mcclim)
   :components ((:file "package")
                (:file "objects")
-               (:file "rhombs")))
+               (:file "kites-and-darts")))

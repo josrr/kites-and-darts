@@ -8,18 +8,45 @@ P2 Penrose tiling generator
 GPLv3
 
 * Screenshots
+[[./001.png]]
+[[./004.png]]
+[[./006.png]]
+[[./008.png]]
+[[./010.png]]
+[[./012.png]]
 
 * How to run the program
 
-To run the program, clone [[https://github.com/josrr/minskytron-gl][this]] repository in your Quicklisp
-=local-projects= directory
+To run the program, clone
+[[https://github.com/josrr/kites-and-darts][this]] repository in your
+Quicklisp =local-projects= directory
 
 #+BEGIN_SRC
  $ cd ~/quicklisp/local-projects/
- $ git clone https://github.com/josrr/minskytron-gl.git
+ $ git clone https://github.com/josrr/kites-and-darts.git
 #+END_SRC
 
 then:
 
 #+BEGIN_SRC
+ $ sbcl
+ This is SBCL 2.2.6, an implementation of ANSI Common Lisp.
+ More information about SBCL is available at <http://www.sbcl.org/>.
+
+ SBCL is free software, provided as is, with absolutely no warranty.
+ It is mostly in the public domain; some portions are provided under
+ BSD-style licenses.  See the CREDITS and COPYING files in the
+ distribution for more information.
+
+ * (ql:register-local-projects)
+ NIL
+ * (ql:quickload "kites-and-darts")
+ To load "kites-and-darts":
+   Load 1 ASDF system:
+     kites-and-darts
+ ; Loading "kites-and-darts"
+ ..................................................
+ .....
+ ("kites-and-darts")
+ * (kites-and-darts:start)
 #+END_SRC

@@ -8,7 +8,6 @@
             (/ (- (rectangle-max-y region) (rectangle-min-y region)) 2))))
 
 (defun draw-tiles (objects canvas)
-  (window-clear canvas)
   (multiple-value-bind (x y) (canvas-center (find-pane-named *application-frame*
                                                              'canvas))
     (with-drawing-options (canvas :clipping-region (make-rectangle* 0 0 1024 1024))

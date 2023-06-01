@@ -37,9 +37,6 @@
                        (:right
                         (setf angle (- theta *144*))
                         'right-dart/2))
-                     #|:polygon (clim:make-polygon (list b1 b2
-                     (make-point (+ (point-x b2) (* a (cos angle)))
-                     (+ (point-y b2) (* a (sin angle))))))|#
                      :points (list b1 b2
                                    (make-point (+ (point-x b2) (* a (cos angle)))
                                                (+ (point-y b2) (* a (sin angle)))))))))
@@ -55,9 +52,6 @@
                        (:right
                         (setf angle (+ theta *108*))
                         'right-kite/2))
-                     #|:polygon (clim:make-polygon (list b1 b2
-                     (make-point (+ (point-x b2) (* b (cos angle)))
-                     (+ (point-y b2) (* b (sin angle))))))|#
                      :points (list b1 b2
                                    (make-point (+ (point-x b2) (* b (cos angle)))
                                                (+ (point-y b2) (* b (sin angle)))))))))

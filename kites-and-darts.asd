@@ -1,4 +1,4 @@
-;;;; rhombs.asd
+;;;; kites-and-darts.asd
 
 (asdf:defsystem #:kites-and-darts
   :description "P2 tile generator"

@@ -2,8 +2,7 @@
 
 (in-package #:kites-and-darts)
 
-(defclass tile/2 ()
-  ((points :initarg :points :initform nil :accessor points)))
+(defclass tile/2 (standard-polygon) ())
 
 (defclass kite/2 (tile/2) ())
 (defclass left-kite/2 (kite/2) ())
@@ -38,6 +37,9 @@
                        (:right
                         (setf angle (- theta *144*))
                         'right-dart/2))
+                     #|:polygon (clim:make-polygon (list b1 b2
+                     (make-point (+ (point-x b2) (* a (cos angle)))
+                     (+ (point-y b2) (* a (sin angle))))))|#
                      :points (list b1 b2
                                    (make-point (+ (point-x b2) (* a (cos angle)))
                                                (+ (point-y b2) (* a (sin angle)))))))))
@@ -53,16 +55,20 @@
                        (:right
                         (setf angle (+ theta *108*))
                         'right-kite/2))
+                     #|:polygon (clim:make-polygon (list b1 b2
+                     (make-point (+ (point-x b2) (* b (cos angle)))
+                     (+ (point-y b2) (* b (sin angle))))))|#
                      :points (list b1 b2
                                    (make-point (+ (point-x b2) (* b (cos angle)))
                                                (+ (point-y b2) (* b (sin angle)))))))))
 
 (defmethod draw ((obj tile/2) pane)
-  (draw-polygon pane (points obj))
-  (draw-line pane (elt (points obj) 0) (elt (points obj) 1)
-             :ink +black+ :line-thickness 2)
-  (draw-line pane (elt (points obj) 1) (elt (points obj) 2)
-             :ink +black+ :line-thickness 2))
+  (draw-design pane obj)
+  (let ((points (polygon-points obj)))
+    (draw-line pane (elt points 0) (elt points 1)
+               :ink +black+ :line-thickness 1)
+    (draw-line pane (elt points 1) (elt points 2)
+               :ink +black+ :line-thickness 1)))
 
 (defparameter *right-dart-color* (make-rgb-color 1 1 (/ #x99 255)))
 (defparameter *left-dart-color* (make-rgb-color 1 1 (/ #xd9 255)))
@@ -85,24 +91,53 @@
   (with-drawing-options (pane :ink *right-kite-color*)
     (call-next-method)))
 
-(defmethod p2-step ((obj left-dart/2))
-  (let ((d (make-dart/2 (elt (points obj) 1) (elt (points obj) 2) :left)))
+(defmethod p2-step :around ((obj tile/2) region)
+  (if (region-intersects-region-p region obj)
+      (call-next-method)
+      nil))
+
+(defmethod p2-step ((obj left-dart/2) region)
+  (declare (ignore region))
+  (let ((d (make-dart/2 (elt (polygon-points obj) 1)
+                        (elt (polygon-points obj) 2)
+                        :left)))
     (list d
-          (make-kite/2 (elt (points obj) 0) (elt (points d) 2) :right))))
+          (make-kite/2 (elt (polygon-points obj) 0)
+                       (elt (polygon-points d) 2)
+                       :right))))
 
-(defmethod p2-step ((obj right-dart/2))
-  (let ((d (make-dart/2 (elt (points obj) 1) (elt (points obj) 2) :right)))
+(defmethod p2-step ((obj right-dart/2) region)
+  (declare (ignore region))
+  (let ((d (make-dart/2 (elt (polygon-points obj) 1)
+                        (elt (polygon-points obj) 2)
+                        :right)))
     (list d
-          (make-kite/2 (elt (points obj) 0) (elt (points d) 2) :left))))
+          (make-kite/2 (elt (polygon-points obj) 0)
+                       (elt (polygon-points d) 2)
+                       :left))))
 
-(defmethod p2-step ((obj left-kite/2))
-  (let* ((k1 (make-kite/2 (elt (points obj) 1) (elt (points obj) 2) :left))
-         (d (make-dart/2 (elt (points obj) 0) (elt (points k1) 2) :left)))
+(defmethod p2-step ((obj left-kite/2) region)
+  (declare (ignore region))
+  (let* ((k1 (make-kite/2 (elt (polygon-points obj) 1)
+                          (elt (polygon-points obj) 2)
+                          :left))
+         (d (make-dart/2 (elt (polygon-points obj) 0)
+                         (elt (polygon-points k1) 2)
+                         :left)))
     (list k1 d
-          (make-kite/2 (elt (points obj) 1) (elt (points d) 2) :right))))
+          (make-kite/2 (elt (polygon-points obj) 1)
+                       (elt (polygon-points d) 2)
+                       :right))))
 
-(defmethod p2-step ((obj right-kite/2))
-  (let* ((k1 (make-kite/2 (elt (points obj) 1) (elt (points obj) 2) :right))
-         (d (make-dart/2 (elt (points obj) 0) (elt (points k1) 2) :right)))
+(defmethod p2-step ((obj right-kite/2) region)
+  (declare (ignore region))
+  (let* ((k1 (make-kite/2 (elt (polygon-points obj) 1)
+                          (elt (polygon-points obj) 2)
+                          :right))
+         (d (make-dart/2 (elt (polygon-points obj) 0)
+                         (elt (polygon-points k1) 2)
+                         :right)))
     (list k1 d
-          (make-kite/2 (elt (points obj) 1) (elt (points d) 2) :left))))
+          (make-kite/2 (elt (polygon-points obj) 1)
+                       (elt (polygon-points d) 2)
+                       :left))))

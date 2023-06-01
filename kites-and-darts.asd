@@ -6,9 +6,7 @@
   :license  "GPL Ver. 3"
   :version "0.0.1"
   :serial t
-  :depends-on (#:uiop
-               #:alexandria
-               #:bordeaux-threads
+  :depends-on (#:bordeaux-threads
                #:local-time
                #:mcclim)
   :components ((:file "package")

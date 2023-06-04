@@ -7,7 +7,7 @@
   :version "0.0.1"
   :serial t
   :depends-on (#:bordeaux-threads
-               #:local-time
+               ;;#:local-time
                #:mcclim)
   :components ((:file "package")
                (:file "objects")

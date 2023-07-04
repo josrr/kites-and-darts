@@ -10,5 +10,6 @@
                ;;#:local-time
                #:mcclim)
   :components ((:file "package")
+               (:file "polynomials")
                (:file "objects")
                (:file "kites-and-darts")))

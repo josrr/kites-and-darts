@@ -135,3 +135,109 @@
           (make-kite/2 (elt (polygon-points obj) 1)
                        (elt (polygon-points d) 2)
                        :left))))
+
+;;; Con polígonos
+
+;;(defclass tile/2-poly (tile/2))
+
+(defclass polytile-mixin ()
+  ((z0 :initarg :z0 :initform 0 :reader polytile-z0)
+   (z1 :initarg :z1 :initform 1 :reader polytile-z1)
+   (z2 :initarg :z2 :initform nil :reader polytile-z2)))
+
+(defclass left-polykite/2 (polytile-mixin left-kite/2) ())
+(defclass right-polykite/2 (polytile-mixin right-kite/2) ())
+
+(defclass left-polydart/2 (polytile-mixin left-dart/2) ())
+(defclass right-polydart/2 (polytile-mixin right-dart/2) ())
+
+(defparameter *p-phi* (poly 1 0 1 -1))
+(defparameter *p-1/phi* (poly 0 0 1 -1))
+(defparameter *p-t* (poly 0 1))
+(defparameter *p-t2* (poly 0 0 1))
+(defparameter *cis-pi/5* (cis (/ pi 5)))
+
+(defun polytile-point (p)
+  (declare (type (or polynomial integer) p))
+  (let ((z (poly-eval p *cis-pi/5*)))
+    (make-point (realpart z) (imagpart z))))
+
+(defun make-polydart/2 (z0 z1 &optional (handedness :left))
+  (let (z2)
+   (make-instance (case handedness
+                    (:left
+                     (setf z2 (poly-simplify (poly+ z0 (poly*poly (poly*poly (poly- z1 z0) *p-t*)
+                                                                  *p-1/phi*))))
+                     'left-polydart/2)
+                    (:right
+                     (setf z2 (poly-simplify (poly+ z1 (poly*poly (poly*poly (poly- z0 z1) *p-t*)
+                                                                  *p-1/phi*))))
+                     'right-polydart/2))
+                  :z0 z0
+                  :z1 z1
+                  :z2 z2
+                  :points (list (polytile-point z0)
+                                (polytile-point z1)
+                                (polytile-point z2)))))
+
+(defun make-polykite/2 (z0 z1 &optional (handedness :left))
+  (let (z2)
+   (make-instance (case handedness
+                    (:left
+                     (setf z2 (poly-simplify (poly+ z1 (poly*poly (poly*poly (poly- z0 z1) *p-t2*) *p-1/phi*))))
+                     'left-polykite/2)
+                    (:right
+                     (setf z2 (poly-simplify (poly+ z0 (poly*poly (poly- z1 z0) *p-t*))))
+                     'right-polykite/2))
+                  :z0 z0
+                  :z1 z1
+                  :z2 z2
+                  :points (list (polytile-point z0)
+                                (polytile-point z1)
+                                (polytile-point z2)))))
+
+(defmethod p2-step ((obj left-polydart/2) region)
+  (declare (ignore region))
+  (let ((d (make-polydart/2 (polytile-z1 obj)
+                            (polytile-z2 obj)
+                            :left)))
+    (list d
+          (make-polykite/2 (polytile-z0 obj)
+                           (polytile-z2 d)
+                           :right))))
+
+(defmethod p2-step ((obj right-polydart/2) region)
+  (declare (ignore region))
+  (let ((d (make-polydart/2 (polytile-z1 obj)
+                            (polytile-z2 obj)
+                            :right)))
+    (list d
+          (make-polykite/2 (polytile-z0 obj)
+                           (polytile-z2 d)
+                           :left))))
+
+(defmethod p2-step ((obj left-polykite/2) region)
+  (declare (ignore region))
+  (let* ((k1 (make-polykite/2 (polytile-z1 obj)
+                              (polytile-z2 obj)
+                              :left))
+         (d (make-polydart/2 (polytile-z0 obj)
+                             (polytile-z2 k1)
+                             :left)))
+    (list k1 d
+          (make-polykite/2 (polytile-z1 obj)
+                           (polytile-z2 d)
+                           :right))))
+
+(defmethod p2-step ((obj right-polykite/2) region)
+  (declare (ignore region))
+  (let* ((k1 (make-polykite/2 (polytile-z1 obj)
+                              (polytile-z2 obj)
+                              :right))
+         (d (make-polydart/2 (polytile-z0 obj)
+                             (polytile-z2 k1)
+                             :right)))
+    (list k1 d
+          (make-polykite/2 (polytile-z1 obj)
+                           (polytile-z2 d)
+                           :left))))

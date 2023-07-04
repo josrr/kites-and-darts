@@ -14,7 +14,7 @@
       (with-drawing-options (canvas :transformation
                                     (compose-transformations
                                      (make-scaling-transformation* 3.8 3.8 x y)
-                                     (make-translation-transformation 0 99/2)))
+                                     (make-translation-transformation 0 (- y 273/2))))
         (loop for obj in objects
               do (draw obj canvas))
         (draw-design canvas (kites-and-darts-clipping-region *application-frame*)
@@ -42,15 +42,13 @@
 
 (define-kites-and-darts-frame-command (com-step :name "Step" :menu t) ()
   (with-accessors ((objects kites-and-darts-frame-objects)) *application-frame*
-    (multiple-value-bind (x y) (canvas-center (find-pane-named *application-frame*
-                                                               'canvas))
-      (declare (ignore x))
-      (setf objects (if (null objects)
-                        (list (make-dart/2 (make-point 0 (- y 186))
-                                           (make-point 1024 (- y 186)) :left))
-                        (loop with region = (kites-and-darts-clipping-region *application-frame*)
-                              for obj in objects
-                              append (p2-step obj region)))))))
+    (setf objects (if (null objects)
+                      (list ;;(make-dart/2 (make-point 0 0) (make-point 1024 0) :left)
+                            (make-polydart/2 0 1024 :left)
+                            )
+                      (loop with region = (kites-and-darts-clipping-region *application-frame*)
+                            for obj in objects
+                            append (p2-step obj region))))))
 
 (define-kites-and-darts-frame-command (com-redraw :name "Redraw" :menu t) ()
   t)
@@ -60,9 +58,9 @@
 
 (defmethod run-frame-top-level :before ((frame kites-and-darts-frame) &key &allow-other-keys)
   (multiple-value-bind (x y) (canvas-center (find-pane-named frame 'canvas))
+    (declare (ignore y))
     (setf (kites-and-darts-clipping-region frame)
-          (make-rectangle* (- x 137) (- y 186)
-                           (+ x 137) (+ y -186 273)))))
+          (make-rectangle* (- x 137) 0 (+ x 137) 273))))
 
 (defun start ()
   (find-application-frame 'kites-and-darts-frame

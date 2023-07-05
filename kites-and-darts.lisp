@@ -24,28 +24,42 @@
   (window-clear canvas)
   (draw-tiles (kites-and-darts-frame-objects frame) canvas))
 
+(defun toggle-polynomial-operations (gadget new-value)
+  (let ((frame (pane-frame gadget)))
+    (with-accessors ((polyopsp kites-and-darts-polynomial-operations-p)) frame
+      (setf polyopsp new-value)
+      (execute-frame-command frame '(com-reset)))))
+
 (define-application-frame kites-and-darts-frame ()
   ((objects :initarg :objects :accessor kites-and-darts-frame-objects)
-   (clipping-region :initarg :clipping-region :accessor kites-and-darts-clipping-region))
+   (clipping-region :initarg :clipping-region :accessor kites-and-darts-clipping-region)
+   (polynomial-operations-p :initform nil :accessor kites-and-darts-polynomial-operations-p))
   (:panes (canvas (make-pane 'application-pane
                              :name 'canvas
                              :background +black+
                              :display-function #'display-canvas
                              :display-time :command-loop))
+          (toggle-btn :toggle-button
+                      :label "Toggle polynomial operations"
+                      :value nil
+                      :value-changed-callback #'toggle-polynomial-operations)
           (interactor :interactor))
   (:layouts (default
              (vertically (:min-height 1280 :max-height 1280 :height 1280
                           :min-width 1024 :max-width 1024 :width 1024)
                (4/5 canvas)
-               (1/5 interactor))))
+               (1/20 (labelling (:label "Options") toggle-btn))
+               (3/20 interactor))))
   (:menu-bar t))
 
 (define-kites-and-darts-frame-command (com-step :name "Step" :menu t) ()
-  (with-accessors ((objects kites-and-darts-frame-objects)) *application-frame*
+  (with-accessors ((objects kites-and-darts-frame-objects)
+                   (polyopsp kites-and-darts-polynomial-operations-p))
+      *application-frame*
     (setf objects (if (null objects)
-                      (list ;;(make-dart/2 (make-point 0 0) (make-point 1024 0) :left)
-                            (make-polydart/2 0 1024 :left)
-                            )
+                      (list (if polyopsp
+                                (make-polydart/2 0 1024 :left)
+                                (make-dart/2 (make-point 0 0) (make-point 1024 0) :left)))
                       (loop with region = (kites-and-darts-clipping-region *application-frame*)
                             for obj in objects
                             append (p2-step obj region))))))

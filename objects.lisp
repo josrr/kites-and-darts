@@ -166,12 +166,14 @@
   (let (z2)
    (make-instance (case handedness
                     (:left
-                     (setf z2 (poly-simplify (poly+ z0 (poly*poly (poly*poly (poly- z1 z0) *p-t*)
-                                                                  *p-1/phi*))))
+                     (setf z2 (poly-simplify
+                               (poly+ z0 (poly*poly (poly*poly (poly- z1 z0) *p-t*)
+                                                    *p-1/phi*))))
                      'left-polydart/2)
                     (:right
-                     (setf z2 (poly-simplify (poly+ z1 (poly*poly (poly*poly (poly- z0 z1) *p-t*)
-                                                                  *p-1/phi*))))
+                     (setf z2 (poly-simplify
+                               (poly+ z1 (poly*poly (poly*poly (poly- z0 z1) *p-t*)
+                                                    *p-1/phi*))))
                      'right-polydart/2))
                   :z0 z0
                   :z1 z1
@@ -184,10 +186,13 @@
   (let (z2)
    (make-instance (case handedness
                     (:left
-                     (setf z2 (poly-simplify (poly+ z1 (poly*poly (poly*poly (poly- z0 z1) *p-t2*) *p-1/phi*))))
+                     (setf z2 (poly-simplify
+                               (poly+ z1 (poly*poly (poly*poly (poly- z0 z1) *p-t2*)
+                                                    *p-1/phi*))))
                      'left-polykite/2)
                     (:right
-                     (setf z2 (poly-simplify (poly+ z0 (poly*poly (poly- z1 z0) *p-t*))))
+                     (setf z2 (poly-simplify
+                               (poly+ z0 (poly*poly (poly- z1 z0) *p-t*))))
                      'right-polykite/2))
                   :z0 z0
                   :z1 z1
